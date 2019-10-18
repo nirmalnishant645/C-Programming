@@ -1,72 +1,73 @@
 #include<stdio.h>
-#define size 3
-struct pf
-{
-	int pno,cnt;
-}frames[size]={{0,0},{0,0},{0,0}};
-
-int n,req[30];
-
-int pgfd(int pno)
-{
-	int i;
-	for(i=0;i<n;i++)
-	{
-		if(frames[i].pno==pno)
-			return i;
-	}
-	return -1;
-}
-
-int getlrupg()
-{
-	int i,min=0;
-	for(i=0;i<n;i++)
-	{
-		if(frames[i].cnt<frames[min].cnt)
-			min=i;
-	}
-	return min;
-}
-
 main()
 {
-	int pfc=0,pno,i,j=0,r,k;
-	if(n<=size)
-	{
-		printf("Enter the total number of frames: ");
-		scanf("%d",&n);
-		printf("Enter the total number of pages: ");
-		scanf("%d",&r);
-		printf("Enter the reference string:\n");
-		for(i=0;i<r;i++)
-		{
-      printf("[%d]: ",i+1);
-			scanf("%d",&req[i]);
-		}
-		for(i=0;i<r;i++)
-		{
-			pno=req[i];
-			j=pgfd(pno);
-			if(j!=-1)
-			{
-				printf("\n%d\t\t",pno);
-				for(k=0;k<n;k++)
-					printf("%4d",frames[k].pno);
-				frames[j].cnt=i;
-			}
-			else
-			{
-				j=getlrupg();
-				frames[j].pno=pno;
-				frames[j].cnt=i;
-				printf("\n%d\t\t",pno);
-				for(k=0;k<n;k++)
-					printf("%4d",frames[k].pno);
-				pfc++;
-			}
-		}
-
-		printf("\nTotal number of page faults is: %d",pfc);
-	}
+int q[20],p[50],c=0,c1,d,f,i,j,k=0,n,r,t,b[20],c2[20];
+printf("Enter total number of pages: ");
+scanf("%d",&n);
+printf("Enter the reference string: \n");
+for(i=0;i<n;i++)
+            scanf("%d",&p[i]);
+printf("Enter total number of frames: ");
+scanf("%d",&f);
+q[k]=p[k];
+printf("\n\t%d\n",q[k]);
+c++;
+k++;
+for(i=1;i<n;i++)
+            {
+                        c1=0;
+                        for(j=0;j<f;j++)
+                        {
+                                    if(p[i]!=q[j])
+                                    c1++;
+                        }
+                        if(c1==f)
+                        {
+                                    c++;
+                                    if(k<f)
+                                    {
+                                                q[k]=p[i];
+                                                k++;
+                                                for(j=0;j<k;j++)
+                                                printf("\t%d",q[j]);
+                                                printf("\n");
+                                    }
+                                    else
+                                    {
+                                                for(r=0;r<f;r++)
+                                                {
+                                                            c2[r]=0;
+                                                            for(j=i-1;j<n;j--)
+                                                            {
+                                                            if(q[r]!=p[j])
+                                                            c2[r]++;
+                                                            else
+                                                            break;
+                                                }
+                                    }
+                                    for(r=0;r<f;r++)
+                                     b[r]=c2[r];
+                                    for(r=0;r<f;r++)
+                                    {
+                                                for(j=r;j<f;j++)
+                                                {
+                                                            if(b[r]<b[j])
+                                                            {
+                                                                        t=b[r];
+                                                                        b[r]=b[j];
+                                                                        b[j]=t;
+                                                            }
+                                                }
+                                    }
+                                    for(r=0;r<f;r++)
+                                    {
+                                                if(c2[r]==b[0])
+                                                q[r]=p[i];
+                                                printf("\t%d",q[r]);
+                                    }
+                                    printf("\n");
+                        }
+            }
+}
+printf("\nTotal Page Faults: %d",c);
 }
