@@ -1,78 +1,72 @@
 #include<stdio.h>
-
-int main()
+#define size 3
+struct pf
 {
-      int frames[30], temp[30], pages[30];
-      int total_pages, m, n, position, k, l, total_frames;
-      int a = 0, b = 0, page_fault = 0;
-      printf("\nEnter Total Number of Frames:\t");
-      scanf("%d", &total_frames);
-      for(m = 0; m < total_frames; m++)
-      {
-            frames[m] = -1;
-      }
-      printf("Enter Total Number of Pages:\t");
-      scanf("%d", &total_pages);
-      printf("Enter Values for Reference String:\n");
-      for(m = 0; m < total_pages; m++)
-      {
-            printf("[%d]:\t", m + 1);
-            scanf("%d", &pages[m]);
-      }
-      for(n = 0; n < total_pages; n++)
-      {
-            a = 0, b = 0;
-            for(m = 0; m < total_frames; m++)
-            {
-                  if(frames[m] == pages[n])
-                  {
-                        a = 1;
-                        b = 1;
-                        break;
-                  }
-            }
-            if(a == 0)
-            {
-                  for(m = 0; m < total_frames; m++)
-                  {
-                        if(frames[m] == -1)
-                        {
-                              frames[m] = pages[n];
-                              b = 1;
-                              break;
-                        }
-                  }
-            }
-            if(b == 0)
-            {
-                  for(m = 0; m < total_frames; m++)
-                  {
-                        temp[m] = 0;
-                  }
-                  for(k = n - 1, l = 1; l <= total_frames - 1; l++, k--)
-                  {
-                        for(m = 0; m < total_frames; m++)
-                        {
-                              if(frames[m] == pages[k])
-                              {
-                                    temp[m] = 1;
-                              }
-                        }
-                  }
-                  for(m = 0; m < total_frames; m++)
-                  {
-                        if(temp[m] == 0)
-                        position = m;
-                  }
-                  frames[position] = pages[n];
-                  page_fault++;
-            }
-            printf("\n");
-            for(m = 0; m < total_frames; m++)
-            {
-                  printf("%d\t", frames[m]);
-            }
-      }
-      printf("\nTotal Number of Page Faults:\t%d\n", page_fault);
-      return 0;
+	int pno,cnt;
+}frames[size]={{0,0},{0,0},{0,0}};
+
+int n,req[30];
+
+int pgfd(int pno)
+{
+	int i;
+	for(i=0;i<n;i++)
+	{
+		if(frames[i].pno==pno)
+			return i;
+	}
+	return -1;
+}
+
+int getlrupg()
+{
+	int i,min=0;
+	for(i=0;i<n;i++)
+	{
+		if(frames[i].cnt<frames[min].cnt)
+			min=i;
+	}
+	return min;
+}
+
+main()
+{
+	int pfc=0,pno,i,j=0,r,k;
+	if(n<=size)
+	{
+		printf("Enter the total number of frames: ");
+		scanf("%d",&n);
+		printf("Enter the total number of pages: ");
+		scanf("%d",&r);
+		printf("Enter the reference string:\n");
+		for(i=0;i<r;i++)
+		{
+      printf("[%d]: ",i+1);
+			scanf("%d",&req[i]);
+		}
+		for(i=0;i<r;i++)
+		{
+			pno=req[i];
+			j=pgfd(pno);
+			if(j!=-1)
+			{
+				printf("\n%d\t\t",pno);
+				for(k=0;k<n;k++)
+					printf("%4d",frames[k].pno);
+				frames[j].cnt=i;
+			}
+			else
+			{
+				j=getlrupg();
+				frames[j].pno=pno;
+				frames[j].cnt=i;
+				printf("\n%d\t\t",pno);
+				for(k=0;k<n;k++)
+					printf("%4d",frames[k].pno);
+				pfc++;
+			}
+		}
+
+		printf("\nTotal number of page faults is: %d",pfc);
+	}
 }
